@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Titiksha 💕</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #ffe6e6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #cc0000;
+            margin-bottom: 60px;
+            font-weight: 400;
+            line-height: 1.6;
+            font-family: 'Caveat', cursive;
+            font-size: 42px;
+        }
+
+        .buttons-container {
+            position: relative;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .yes-btn {
+            padding: 30px 80px;
+            font-size: 24px;
+            border-radius: 12px;
+            background: #ff3333;
+            color: white;
+        }
+
+        .yes-btn:hover {
+            background: #cc0000;
+        }
+
+        .no-btn {
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 6px;
+            position: absolute;
+            transition: all 0.1s ease;
+            background: white;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+
+        .response-message {
+            margin-top: 60px;
+            font-size: 28px;
+            color: #ff3333;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .response-message.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hey Titiksha,<br>will you be pappi monster's valentine?</h1>
+        
+        <div class="buttons-container">
+            <button class="yes-btn" onclick="handleYes()">Yes</button>
+            <button class="no-btn" id="noBtn" onmouseover="moveButton()" ontouchstart="moveButton()">No</button>
+        </div>
+
+        <div class="response-message" id="responseMessage"></div>
+    </div>
+
+    <script>
+        function moveButton() {
+            const noBtn = document.getElementById('noBtn');
+            const container = document.querySelector('.buttons-container');
+            
+            const containerRect = container.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+            
+            // Get random position within container bounds
+            const maxX = containerRect.width - btnRect.width - 40;
+            const maxY = containerRect.height - btnRect.height - 40;
+            
+            const randomX = Math.random() * maxX - maxX / 2;
+            const randomY = Math.random() * maxY - maxY / 2;
+            
+            noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        }
+
+        function handleYes() {
+            window.location.href = 'countdown.html';
+        }
+    </script>
+</body>
+</html>

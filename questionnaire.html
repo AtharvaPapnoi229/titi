@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Our Day 💕</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #ffeef0 0%, #ffe6e6 50%, #ffd6d9 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        .timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(204, 0, 0, 0.15);
+            font-size: 14px;
+            z-index: 1000;
+            text-align: right;
+        }
+
+        .timer-title {
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .timer-display {
+            font-weight: 600;
+            color: #ff3333;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 80px auto 40px;
+            text-align: center;
+        }
+
+        .question-card {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(204, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        .question-card.fade-out {
+            animation: fadeOut 0.4s ease forwards;
+        }
+
+        /* Heart particles animation */
+        .heart-particle {
+            position: fixed;
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 999;
+            animation: floatUp 2s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) rotate(360deg);
+            }
+        }
+
+        .question-number {
+            font-size: 16px;
+            color: #999;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .question-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: #cc0000;
+            margin-bottom: 40px;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            padding: 20px 30px;
+            font-size: 18px;
+            border: 2px solid #ff3333;
+            background: white;
+            color: #ff3333;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn:hover {
+            background: #ff3333;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 51, 51, 0.3);
+        }
+
+        .option-btn.selected {
+            background: #ff3333;
+            color: white;
+            animation: pop 0.3s ease;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ffd1d1;
+            border-radius: 10px;
+            margin-top: 40px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #ff3333;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .completion-message {
+            display: none;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInScale 0.6s ease forwards;
+        }
+
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .completion-message h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            color: #cc0000;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .completion-message p {
+            font-size: 22px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .final-time {
+            font-size: 32px;
+            font-weight: 600;
+            color: #ff3333;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 600px) {
+            .question-text {
+                font-size: 28px;
+            }
+
+            .option-btn {
+                font-size: 16px;
+                padding: 15px 20px;
+            }
+
+            .timer {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="timer" id="timer">
+        <div class="timer-title">Countdown to next pappi</div>
+        <div class="timer-display" id="timerDisplay">0d 0h 0m 0s</div>
+    </div>
+
+    <div class="container">
+        <div id="questionContainer"></div>
+        
+        <div class="completion-message" id="completionMessage">
+            <h2>Perfect! 💕</h2>
+            <p>14th February 2026 is gonna be extra special!</p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                number: 1,
+                text: "What do you want to do first thing in the morning?",
+                options: [
+                    "Morning sex",
+                    "Stoned morning sex"
+                ]
+            },
+            {
+                number: 2,
+                text: "Okay… and then?",
+                options: [
+                    "A slow walk in Cubbon",
+                    "Breakfast at Labonel"
+                ]
+            },
+            {
+                number: 3,
+                text: "Which cute thing are we doing together?",
+                options: [
+                    "Sip and paint",
+                    "Pottery class",
+                    "Cooking class"
+                ]
+            },
+            {
+                number: 4,
+                text: "How are we killing time before midnight pappis?",
+                options: [
+                    "Sip and sauté, then stargaze",
+                    "Cocktail bar hopping"
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = [];
+
+        // Target: February 11, 2026, 10:45 AM IST (UTC+5:30)
+        function getTargetDate() {
+            const year = 2026;
+            const month = 1; // February (0-indexed)
+            const day = 11;
+            const hour = 10;
+            const minute = 45;
+            
+            // IST is UTC+5:30
+            const istOffset = 5.5 * 60 * 60 * 1000;
+            const utcDate = Date.UTC(year, month, day, hour, minute, 0);
+            return utcDate - istOffset;
+        }
+
+        const targetDate = getTargetDate();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            if (difference <= 0) {
+                document.getElementById('timerDisplay').textContent = '0d 0h 0m 0s';
+                return;
+            }
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('timerDisplay').textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        // Update countdown every second
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        function showQuestion(index) {
+            if (index >= questions.length) {
+                showCompletion();
+                return;
+            }
+
+            const q = questions[index];
+            const progress = ((index) / questions.length) * 100;
+
+            const html = `
+                <div class="question-card">
+                    <div class="question-number">Question ${q.number} of ${questions.length}</div>
+                    <div class="question-text">${q.text}</div>
+                    <div class="options">
+                        ${q.options.map((option, i) => `
+                            <button class="option-btn" onclick="selectOption(${i}, '${option.replace(/'/g, "\\'")}')">${option}</button>
+                        `).join('')}
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('questionContainer').innerHTML = html;
+        }
+
+        function selectOption(index, answer) {
+            answers.push(answer);
+            
+            // Add selected animation
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons[index].classList.add('selected');
+
+            // Create heart particles
+            createHeartParticles(buttons[index]);
+
+            // Fade out current question
+            setTimeout(() => {
+                const questionCard = document.querySelector('.question-card');
+                questionCard.classList.add('fade-out');
+            }, 400);
+
+            // Wait for fade out animation then show next question
+            setTimeout(() => {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            }, 800);
+        }
+
+        function createHeartParticles(button) {
+            const rect = button.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            for (let i = 0; i < 8; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-particle';
+                heart.innerHTML = '💕';
+                heart.style.left = centerX + 'px';
+                heart.style.top = centerY + 'px';
+                heart.style.animationDelay = (i * 0.1) + 's';
+                
+                // Random horizontal spread
+                const angle = (Math.PI * 2 * i) / 8;
+                const distance = 50;
+                setTimeout(() => {
+                    heart.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
+                }, 10);
+
+                document.body.appendChild(heart);
+
+                // Remove after animation
+                setTimeout(() => {
+                    heart.remove();
+                }, 2000);
+            }
+        }
+
+        function showCompletion() {
+            document.getElementById('questionContainer').style.display = 'none';
+            
+            const completionMsg = document.getElementById('completionMessage');
+            completionMsg.style.display = 'block';
+            
+            // Store answers (you can use these later)
+            console.log('Answers:', answers);
+        }
+
+        // Start the questionnaire
+        showQuestion(0);
+    </script>
+</body>
+</html>
