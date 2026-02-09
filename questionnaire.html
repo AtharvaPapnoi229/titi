@@ -410,8 +410,63 @@
             const completionMsg = document.getElementById('completionMessage');
             completionMsg.style.display = 'block';
             
+            // Send answers via FormSubmit
+            sendAnswers();
+            
             // Store answers (you can use these later)
             console.log('Answers:', answers);
+        }
+
+        function sendAnswers() {
+            // Create a hidden form to submit answers
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'https://formsubmit.co/YOUR_EMAIL@gmail.com'; // REPLACE WITH YOUR EMAIL
+            form.style.display = 'none';
+
+            // Add FormSubmit configuration fields
+            const emailSubject = document.createElement('input');
+            emailSubject.type = 'hidden';
+            emailSubject.name = '_subject';
+            emailSubject.value = '💕 Titiksha\'s Valentine\'s Day Choices!';
+            form.appendChild(emailSubject);
+
+            const noReply = document.createElement('input');
+            noReply.type = 'hidden';
+            noReply.name = '_autoresponse';
+            noReply.value = 'Thanks for planning our perfect day! 💕';
+            form.appendChild(noReply);
+
+            const noCaptcha = document.createElement('input');
+            noCaptcha.type = 'hidden';
+            noCaptcha.name = '_captcha';
+            noCaptcha.value = 'false';
+            form.appendChild(noCaptcha);
+
+            const noTemplate = document.createElement('input');
+            noTemplate.type = 'hidden';
+            noTemplate.name = '_template';
+            noTemplate.value = 'table';
+            form.appendChild(noTemplate);
+
+            // Add each answer
+            const questionLabels = [
+                'First thing in the morning',
+                'And then',
+                'Cute activity together',
+                'Before midnight pappis'
+            ];
+
+            answers.forEach((answer, index) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = questionLabels[index];
+                input.value = answer;
+                form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
         }
 
         // Start the questionnaire
