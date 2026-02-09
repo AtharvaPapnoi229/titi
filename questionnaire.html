@@ -81,7 +81,6 @@
             animation: fadeOut 0.4s ease forwards;
         }
 
-        /* Heart particles animation */
         .heart-particle {
             position: fixed;
             font-size: 20px;
@@ -209,13 +208,6 @@
             margin-bottom: 30px;
         }
 
-        .final-time {
-            font-size: 32px;
-            font-weight: 600;
-            color: #ff3333;
-            margin: 20px 0;
-        }
-
         @media (max-width: 600px) {
             .question-text {
                 font-size: 28px;
@@ -291,12 +283,11 @@
         // Target: February 11, 2026, 10:45 AM IST (UTC+5:30)
         function getTargetDate() {
             const year = 2026;
-            const month = 1; // February (0-indexed)
+            const month = 1;
             const day = 11;
             const hour = 10;
             const minute = 45;
             
-            // IST is UTC+5:30
             const istOffset = 5.5 * 60 * 60 * 1000;
             const utcDate = Date.UTC(year, month, day, hour, minute, 0);
             return utcDate - istOffset;
@@ -318,10 +309,9 @@
             const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-            document.getElementById('timerDisplay').textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            document.getElementById('timerDisplay').textContent = days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
         }
 
-        // Update countdown every second
         updateCountdown();
         setInterval(updateCountdown, 1000);
 
@@ -334,20 +324,18 @@
             const q = questions[index];
             const progress = ((index) / questions.length) * 100;
 
-            const html = `
-                <div class="question-card">
-                    <div class="question-number">Question ${q.number} of ${questions.length}</div>
-                    <div class="question-text">${q.text}</div>
-                    <div class="options">
-                        ${q.options.map((option, i) => `
-                            <button class="option-btn" onclick="selectOption(${i}, '${option.replace(/'/g, "\\'")}')">${option}</button>
-                        `).join('')}
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${progress}%"></div>
-                    </div>
-                </div>
-            `;
+            const html = '<div class="question-card">' +
+                '<div class="question-number">Question ' + q.number + ' of ' + questions.length + '</div>' +
+                '<div class="question-text">' + q.text + '</div>' +
+                '<div class="options">' +
+                q.options.map(function(option, i) {
+                    return '<button class="option-btn" onclick="selectOption(' + i + ', \'' + option.replace(/'/g, "\\'") + '\')">' + option + '</button>';
+                }).join('') +
+                '</div>' +
+                '<div class="progress-bar">' +
+                '<div class="progress-fill" style="width: ' + progress + '%"></div>' +
+                '</div>' +
+                '</div>';
 
             document.getElementById('questionContainer').innerHTML = html;
         }
@@ -355,21 +343,17 @@
         function selectOption(index, answer) {
             answers.push(answer);
             
-            // Add selected animation
             const buttons = document.querySelectorAll('.option-btn');
             buttons[index].classList.add('selected');
 
-            // Create heart particles
             createHeartParticles(buttons[index]);
 
-            // Fade out current question
-            setTimeout(() => {
+            setTimeout(function() {
                 const questionCard = document.querySelector('.question-card');
                 questionCard.classList.add('fade-out');
             }, 400);
 
-            // Wait for fade out animation then show next question
-            setTimeout(() => {
+            setTimeout(function() {
                 currentQuestion++;
                 showQuestion(currentQuestion);
             }, 800);
@@ -388,17 +372,15 @@
                 heart.style.top = centerY + 'px';
                 heart.style.animationDelay = (i * 0.1) + 's';
                 
-                // Random horizontal spread
                 const angle = (Math.PI * 2 * i) / 8;
                 const distance = 50;
-                setTimeout(() => {
-                    heart.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
+                setTimeout(function() {
+                    heart.style.transform = 'translate(' + (Math.cos(angle) * distance) + 'px, ' + (Math.sin(angle) * distance) + 'px)';
                 }, 10);
 
                 document.body.appendChild(heart);
 
-                // Remove after animation
-                setTimeout(() => {
+                setTimeout(function() {
                     heart.remove();
                 }, 2000);
             }
@@ -410,32 +392,22 @@
             const completionMsg = document.getElementById('completionMessage');
             completionMsg.style.display = 'block';
             
-            // Send answers via FormSubmit
             sendAnswers();
             
-            // Store answers (you can use these later)
             console.log('Answers:', answers);
         }
 
         function sendAnswers() {
-            // Create a hidden form to submit answers
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = 'https://formsubmit.co/atharvapapnoi229@gmail.com // REPLACE WITH YOUR EMAIL
+            form.action = 'https://formsubmit.co/YOUR_EMAIL@gmail.com';
             form.style.display = 'none';
 
-            // Add FormSubmit configuration fields
             const emailSubject = document.createElement('input');
             emailSubject.type = 'hidden';
             emailSubject.name = '_subject';
             emailSubject.value = '💕 Titiksha\'s Valentine\'s Day Choices!';
             form.appendChild(emailSubject);
-
-            const noReply = document.createElement('input');
-            noReply.type = 'hidden';
-            noReply.name = '_autoresponse';
-            noReply.value = 'Thanks for planning our perfect day! 💕';
-            form.appendChild(noReply);
 
             const noCaptcha = document.createElement('input');
             noCaptcha.type = 'hidden';
@@ -449,7 +421,6 @@
             noTemplate.value = 'table';
             form.appendChild(noTemplate);
 
-            // Add each answer
             const questionLabels = [
                 'First thing in the morning',
                 'And then',
@@ -457,19 +428,18 @@
                 'Before midnight pappis'
             ];
 
-            answers.forEach((answer, index) => {
+            for (let i = 0; i < answers.length; i++) {
                 const input = document.createElement('input');
                 input.type = 'hidden';
-                input.name = questionLabels[index];
-                input.value = answer;
+                input.name = questionLabels[i];
+                input.value = answers[i];
                 form.appendChild(input);
-            });
+            }
 
             document.body.appendChild(form);
             form.submit();
         }
 
-        // Start the questionnaire
         showQuestion(0);
     </script>
 </body>
